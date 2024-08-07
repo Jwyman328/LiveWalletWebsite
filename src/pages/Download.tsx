@@ -53,14 +53,16 @@ const DownloadsTable = () => {
   ));
 
   return (
-    <Table>
-      <Table.Thead>
-        <Table.Tr>
-          <Table.Th>Type</Table.Th>
-          <Table.Th>Download Link</Table.Th>
-        </Table.Tr>
-      </Table.Thead>
-      <Table.Tbody>{rows}</Table.Tbody>
-    </Table>
+    <Table.ScrollContainer minWidth={600}>
+      <Table>
+        <Table.Thead>
+          <Table.Tr>
+            <Table.Th>Type</Table.Th>
+            <Table.Th>Download Link</Table.Th>
+          </Table.Tr>
+        </Table.Thead>
+        <Table.Tbody>{rows}</Table.Tbody>
+      </Table>
+    </Table.ScrollContainer>
   );
 };

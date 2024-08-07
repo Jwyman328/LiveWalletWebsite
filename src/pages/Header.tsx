@@ -29,7 +29,7 @@ export const Header = () => {
   ));
   return (
     <div>
-      <div className="max-[1200px]:px-6 max-[1400px]:px-10 px-28 pt-12 w-screen bg-gray-100">
+      <div className="max-[1200px]:px-6 max-[1400px]:px-10 px-28 pt-8 w-screen bg-gray-100">
         <header className={classes.header}>
           <div className={"h-14 flex flex-row justify-between align-center "}>
             <Title />
