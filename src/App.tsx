@@ -1,24 +1,43 @@
-import React from 'react';
-import logo from './logo.svg';
-import './App.css';
+import React from "react";
+import "./App.css";
+
+import "@mantine/core/styles.css";
+
+import { createTheme, MantineProvider } from "@mantine/core";
+
+import { Home } from "./pages/Home";
+import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
+
+import { BrowserRouter as Router, Routes, Route } from "react-router-dom";
+import { Header } from "./pages/Header";
+import { Download } from "./pages/Download";
+
+const queryClient = new QueryClient();
+
+const theme = createTheme({
+  /** Put your mantine theme override here */
+});
+
+function Main() {
+  return (
+    <MantineProvider theme={theme}>
+      <QueryClientProvider client={queryClient}>
+        <Router>
+          <Header />
+          <Routes>
+            <Route path="/" element={<Home />} />
+            <Route path="/download" element={<Download />} />
+          </Routes>
+        </Router>
+      </QueryClientProvider>
+    </MantineProvider>
+  );
+}
 
 function App() {
   return (
-    <div className="App">
-      <header className="App-header">
-        <img src={logo} className="App-logo" alt="logo" />
-        <p>
-          Edit <code>src/App.tsx</code> and save to reload.
-        </p>
-        <a
-          className="App-link"
-          href="https://reactjs.org"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          Learn React
-        </a>
-      </header>
+    <div className="min-h-screen bg-gray-100">
+      <Main />
     </div>
   );
 }
