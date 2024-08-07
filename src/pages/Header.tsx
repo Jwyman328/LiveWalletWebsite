@@ -20,7 +20,7 @@ export const Header = () => {
       relative="path"
       className={classes.link}
       data-active={active === link.link || undefined}
-      onClick={(event) => {
+      onClick={() => {
         setActive(link.link);
       }}
     >
@@ -53,7 +53,7 @@ export const Header = () => {
 const Title = () => {
   return (
     <div className="flex flex-row items-center">
-      <img className="w-16 h-16 mr-4" src="iconNoBg.png" />
+      <img alt="logo" className="w-16 h-16 mr-4" src="iconNoBg.png" />
       <div className="flex flex-col pt-1">
         <h1 className="font-semibold text-3xl" style={{ color: "#228BE6" }}>
           Live Wallet
