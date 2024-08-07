@@ -10,6 +10,7 @@ export const Download = () => {
         </h1>
         <div className="text-blue-600 underline font-medium">
           <a
+            rel="noreferrer"
             target="_blank"
             href="https://github.com/Jwyman328/LiveWallet/releases"
           >
