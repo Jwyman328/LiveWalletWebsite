@@ -1,15 +1,15 @@
 {
   "files": {
     "main.css": "/LiveWalletWebsite/static/css/main.f5d5dcd6.css",
-    "main.js": "/LiveWalletWebsite/static/js/main.a84e4304.js",
+    "main.js": "/LiveWalletWebsite/static/js/main.e8401532.js",
     "static/js/453.1443d18a.chunk.js": "/LiveWalletWebsite/static/js/453.1443d18a.chunk.js",
     "index.html": "/LiveWalletWebsite/index.html",
     "main.f5d5dcd6.css.map": "/LiveWalletWebsite/static/css/main.f5d5dcd6.css.map",
-    "main.a84e4304.js.map": "/LiveWalletWebsite/static/js/main.a84e4304.js.map",
+    "main.e8401532.js.map": "/LiveWalletWebsite/static/js/main.e8401532.js.map",
     "453.1443d18a.chunk.js.map": "/LiveWalletWebsite/static/js/453.1443d18a.chunk.js.map"
   },
   "entrypoints": [
     "static/css/main.f5d5dcd6.css",
-    "static/js/main.a84e4304.js"
+    "static/js/main.e8401532.js"
   ]
 }
