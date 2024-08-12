@@ -43,7 +43,7 @@ export const Home = () => {
 
         <div className="flex-1 mt-4 w-full h-auto mb-8">
           <video controls>
-            <source src="/LiveWalletDemo.mp4" type="video/mp4" />
+            <source src="LiveWalletDemo.mp4" type="video/mp4" />
             Your browser does not support the video tag.
           </video>
         </div>
