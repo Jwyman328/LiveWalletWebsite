@@ -1,15 +1,15 @@
 {
   "files": {
-    "main.css": "/jwyman328.github.io/livewallet/static/css/main.f5d5dcd6.css",
-    "main.js": "/jwyman328.github.io/livewallet/static/js/main.f992aae4.js",
-    "static/js/453.1443d18a.chunk.js": "/jwyman328.github.io/livewallet/static/js/453.1443d18a.chunk.js",
-    "index.html": "/jwyman328.github.io/livewallet/index.html",
-    "main.f5d5dcd6.css.map": "/jwyman328.github.io/livewallet/static/css/main.f5d5dcd6.css.map",
-    "main.f992aae4.js.map": "/jwyman328.github.io/livewallet/static/js/main.f992aae4.js.map",
-    "453.1443d18a.chunk.js.map": "/jwyman328.github.io/livewallet/static/js/453.1443d18a.chunk.js.map"
+    "main.css": "/livewallet/static/css/main.f5d5dcd6.css",
+    "main.js": "/livewallet/static/js/main.ecec31a8.js",
+    "static/js/453.1443d18a.chunk.js": "/livewallet/static/js/453.1443d18a.chunk.js",
+    "index.html": "/livewallet/index.html",
+    "main.f5d5dcd6.css.map": "/livewallet/static/css/main.f5d5dcd6.css.map",
+    "main.ecec31a8.js.map": "/livewallet/static/js/main.ecec31a8.js.map",
+    "453.1443d18a.chunk.js.map": "/livewallet/static/js/453.1443d18a.chunk.js.map"
   },
   "entrypoints": [
     "static/css/main.f5d5dcd6.css",
-    "static/js/main.f992aae4.js"
+    "static/js/main.ecec31a8.js"
   ]
 }
