@@ -8,13 +8,7 @@ import { createTheme, MantineProvider } from "@mantine/core";
 import { Home } from "./pages/Home";
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 
-import {
-  Routes,
-  Route,
-  createHashRouter,
-  RouterProvider,
-  Outlet,
-} from "react-router-dom";
+import { createHashRouter, RouterProvider, Outlet } from "react-router-dom";
 import { Header } from "./pages/Header";
 import { Download } from "./pages/Download";
 const Layout = () => {
