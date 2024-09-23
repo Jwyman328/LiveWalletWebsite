@@ -37,6 +37,11 @@ export const Home = () => {
                 Estimate USD cost of a transaction at any USD/BTC price and fee
                 rate.
               </li>
+              <li>
+                Understand the impact of UTXO consolidation by easily comparing
+                the resulting UTXO to the input UTXOs across various fee rate
+                environments.
+              </li>
             </ul>
           </div>
         </div>
