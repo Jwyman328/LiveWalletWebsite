@@ -17,7 +17,7 @@ export const Download = () => {
             All releases and changelog
           </a>
         </div>
-        <p className="mt-4 font-semibold">Latest release: 0.7.0 </p>
+        <p className="mt-4 font-semibold">Latest release: 0.8.0 </p>
         <DownloadsTable />
       </div>
     </div>
@@ -28,13 +28,23 @@ const DownloadsTable = () => {
   const versions = [
     {
       type: "MacOS (Apple M1/M2/M3)",
-      label: "0.7.0-arm64.dmg",
-      link: "https://github.com/Jwyman328/LiveWallet/releases/download/0.7.0/Live.Wallet-0.7.0-arm64.dmg",
+      label: "0.8.0-arm64.dmg",
+      link: "https://github.com/Jwyman328/LiveWallet/releases/download/0.8.0/Live.Wallet-0.8.0-arm64.dmg",
     },
     {
       type: "MacOS (Intel)",
-      label: "0.7.0.dmg",
-      link: "https://github.com/Jwyman328/LiveWallet/releases/download/0.7.0/Live.Wallet-0.7.0.dmg",
+      label: "0.8.0.dmg",
+      link: "https://github.com/Jwyman328/LiveWallet/releases/download/0.8.0/Live.Wallet-0.8.0.dmg",
+    },
+    {
+      type: "Linux (Intel/AMD) (Ubuntu/Debian)",
+      label: "0.8.0_amd64.deb",
+      link: "https://github.com/Jwyman328/LiveWallet/releases/download/0.8.0/LiveWallet_0.8.0_amd64.deb",
+    },
+    {
+      type: "Linux (ARM64) (Ubuntu/Debian)",
+      label: "0.8.0_arm64.deb",
+      link: "https://github.com/Jwyman328/LiveWallet/releases/download/0.8.0/LiveWallet_0.8.0_arm64.deb",
     },
   ];
   const rows = versions.map((element) => (
