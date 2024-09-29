@@ -17,7 +17,7 @@ export const Download = () => {
             All releases and changelog
           </a>
         </div>
-        <p className="mt-4 font-semibold">Latest release: 0.8.0 </p>
+        <p className="mt-4 font-semibold">Latest release: 0.9.0 </p>
         <DownloadsTable />
       </div>
     </div>
@@ -28,23 +28,38 @@ const DownloadsTable = () => {
   const versions = [
     {
       type: "MacOS (Apple M1/M2/M3)",
-      label: "0.8.0-arm64.dmg",
-      link: "https://github.com/Jwyman328/LiveWallet/releases/download/0.8.0/Live.Wallet-0.8.0-arm64.dmg",
+      label: "0.9.0-arm64.dmg",
+      link: "https://github.com/Jwyman328/LiveWallet/releases/download/0.9.0/Live.Wallet-0.9.0-arm64.dmg",
     },
     {
       type: "MacOS (Intel)",
-      label: "0.8.0.dmg",
-      link: "https://github.com/Jwyman328/LiveWallet/releases/download/0.8.0/Live.Wallet-0.8.0.dmg",
+      label: "0.9.0.dmg",
+      link: "https://github.com/Jwyman328/LiveWallet/releases/download/0.9.0/Live.Wallet-0.9.0.dmg",
     },
     {
       type: "Linux (Intel/AMD) (Ubuntu/Debian)",
-      label: "0.8.0_amd64.deb",
-      link: "https://github.com/Jwyman328/LiveWallet/releases/download/0.8.0/LiveWallet_0.8.0_amd64.deb",
+      label: "0.9.0_amd64.deb",
+      link: "https://github.com/Jwyman328/LiveWallet/releases/download/0.9.0/LiveWallet_0.9.0_amd64.deb",
     },
     {
       type: "Linux (ARM64) (Ubuntu/Debian)",
-      label: "0.8.0_arm64.deb",
-      link: "https://github.com/Jwyman328/LiveWallet/releases/download/0.8.0/LiveWallet_0.8.0_arm64.deb",
+      label: "0.9.0_arm64.deb",
+      link: "https://github.com/Jwyman328/LiveWallet/releases/download/0.9.0/LiveWallet_0.9.0_arm64.deb",
+    },
+    {
+      type: "Linux (Intel/AMD) (Redhat/CentOs)",
+      label: "0.9.0.x86_64.rpm",
+      link: "https://github.com/Jwyman328/LiveWallet/releases/download/0.9.0/LiveWallet-0.9.0.x86_64.rpm",
+    },
+    {
+      type: "Linux (ARM64) (Redhat/CentOs)",
+      label: "0.9.0.aarch64.rpm",
+      link: "https://github.com/Jwyman328/LiveWallet/releases/download/0.9.0/LiveWallet-0.9.0.aarch64.rpm",
+    },
+    {
+      type: "Windows Installer (10+)",
+      label: "Live.Wallet.Setup.0.9.0.exe",
+      link: "https://github.com/Jwyman328/LiveWallet/releases/download/0.9.0/Live.Wallet.Setup.0.9.0.exe",
     },
   ];
   const rows = versions.map((element) => (
