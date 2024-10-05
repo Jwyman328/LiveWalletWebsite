@@ -14,20 +14,8 @@ import { Utxo, UtxoRequestParamWithAmount } from "../api/types";
 import { createTxFeeEstimate } from "../bitcoin/txFeeCalculation";
 import { ScriptTypes } from "../types/scriptTypes";
 import { BtcMetric, btcSatHandler } from "../types/btcSatHandler";
-import {
-  Collapse,
-  CopyButton,
-  rem,
-  Tooltip,
-  ActionIcon,
-  Button,
-} from "@mantine/core";
-import {
-  IconCheck,
-  IconCircleCheck,
-  IconCircleX,
-  IconCopy,
-} from "@tabler/icons-react";
+import { Collapse, Button } from "@mantine/core";
+import { IconCircleCheck, IconCircleX } from "@tabler/icons-react";
 
 const sectionColor = "rgb(1, 67, 97)";
 

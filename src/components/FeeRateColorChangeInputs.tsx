@@ -7,7 +7,7 @@ import {
 
 import { IconPlus } from "@tabler/icons-react";
 import { ActionIcon } from "@mantine/core";
-import { memo, useCallback, useMemo, useState } from "react";
+import { memo, useMemo, useState } from "react";
 import { usePrevious } from "../hooks/utils";
 
 type FeeRateColorChangeInputsProps = {

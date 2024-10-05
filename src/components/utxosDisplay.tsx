@@ -3,9 +3,7 @@ import {
   CreateTxFeeEstimationResponseType,
   UtxoRequestParamWithAmount,
 } from "../api/types";
-import { notifications } from "@mantine/notifications";
 import { Utxo } from "../api/types";
-import { useCreateTxFeeEstimate } from "../hooks/utxos";
 import {
   Button,
   Tooltip,
@@ -84,32 +82,6 @@ export const UtxosDisplay = ({
     UtxoRequestParamWithAmount[]
   >([]);
 
-  const onCreateBatchTxError = () => {
-    notifications.show({
-      title: "Error creating batch tx fee estimate.",
-      message: "Please try again",
-      color: "red",
-    });
-  };
-
-  const estimateBatch = () => {};
-
-  // const {
-  //   data: batchedTxData,
-  //   mutateAsync,
-  //   isLoading: batchIsLoading,
-  //   isError: isBatchTxRequestError,
-  // } = useCreateTxFeeEstimate(
-  //   selectedUtxos,
-  //   txMode === TxMode.CONSOLIDATE ? consolidationFeeRate : feeRate,
-  //   txMode === TxMode.CONSOLIDATE ? 1 : receivingOutputCount,
-  //   onCreateBatchTxError,
-  //   txMode === TxMode.CONSOLIDATE ? true : false
-  // );
-
-  const [batchedTxData, setBatchedTxData] =
-    useState<CreateTxFeeEstimationResponseType>();
-
   const estimateIt = () => {
     const realFeeRate =
       txMode === TxMode.CONSOLIDATE ? consolidationFeeRate : feeRate;
@@ -122,7 +94,7 @@ export const UtxosDisplay = ({
       signaturesNeeded,
       numberOfXpubs,
       outputCount
-    ); // { fee: 40 }; // await mutateAsync();
+    );
     const response: CreateTxFeeEstimationResponseType = {
       spendable: true,
       fee: fee * realFeeRate,
@@ -130,18 +102,6 @@ export const UtxosDisplay = ({
     };
     return response;
   };
-
-  //const batchedTxData = estimateIt();
-
-  // useEffect(() => {
-  //   const firstBatchedTxData = estimateIt();
-  //   setBatchedTxData(firstBatchedTxData);
-  //   setCurrentBatchedTxData(batchedTxData);
-  // }, []);
-
-  // useEffect(() => {
-  //   setCurrentBatchedTxData(batchedTxData);
-  // }, [batchedTxData]);
 
   // switching selectedUtxos should clear current batchTxData
   useEffect(() => {
@@ -156,8 +116,6 @@ export const UtxosDisplay = ({
       setConsolidationUtxo([]);
     }
   }, [consolidationFeeRate, selectedUtxos.length, txMode]);
-
-  const savePsbt = () => {};
 
   const onReceivingOutputChange = (value: number) => {
     setReceivingOutputCount(value);
@@ -191,21 +149,6 @@ export const UtxosDisplay = ({
 
   const calculateFeeEstimate = async () => {
     try {
-      // todo pass in real value
-      //const mockOutputCount = 1;
-      // const fee = createTxFeeEstimate(
-      //   selectedUtxos.length,
-      //   walletType,
-      //   signaturesNeeded,
-      //   numberOfXpubs,
-      //   receivingOutputCount
-      // );
-      // { fee: 40 }; // await mutateAsync();
-      // const response: CreateTxFeeEstimationResponseType = {
-      //   spendable: true,
-      //   fee: fee,
-      //   psbt: "",
-      // };
       const response = estimateIt();
       setCurrentBatchedTxData(response);
       if (txMode === TxMode.CONSOLIDATE) {

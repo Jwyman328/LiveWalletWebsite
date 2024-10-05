@@ -12,10 +12,9 @@ import {
   SegmentedControl,
   ActionIcon,
   NumberInput,
-  Tooltip,
   Collapse,
 } from "@mantine/core";
-import { BtcMetric, btcSatHandler } from "../types/btcSatHandler";
+import { BtcMetric } from "../types/btcSatHandler";
 import { SettingsSlideout } from "../components/SettingsSlideout";
 import { IconAdjustments } from "@tabler/icons-react";
 import { FeeRateColorChangeInputs } from "../components/FeeRateColorChangeInputs";
@@ -24,8 +23,10 @@ import {
   GetBTCPriceResponseType,
   Utxo,
 } from "../api/types";
-import { Wallet } from "../types/wallet";
 import { ScriptTypes } from "../types/scriptTypes";
+import { notifications } from "@mantine/notifications";
+import { useGetBtcPrice } from "../hooks/price";
+import { useGetCurrentFees } from "../hooks/utxos";
 
 export type ScaleOption = {
   value: string;
@@ -39,14 +40,8 @@ export enum TxMode {
   CONSOLIDATE = "CONSOLIDATE",
 }
 function Playground() {
-  //const getBalanceQueryRequest = useGetBalance();
-  // const getUtxosQueryRequest = useGetUtxos();
-  // const getWalletTypeQueryRequest = useGetWalletType();
-  // const deleteCurrentWalletMutation = useDeleteCurrentWallet();
+  const getCurrentFeesQueryRequest = useGetCurrentFees();
 
-  // const getCurrentFeesQueryRequest = useGetCurrentFees();
-
-  // what is the data structure of a utxo that gets added to the table
   const [utxos, setUtxos] = useState<Utxo[]>([]);
 
   const [currentBatchedTxData, setCurrentBatchedTxData] = useState<
@@ -56,9 +51,7 @@ function Playground() {
   const [btcPrice, setBtcPrice] = useState(0);
 
   const [txMode, setTxMode] = useState(TxMode.SINGLE);
-  const isCreateBatchTx = txMode === TxMode.BATCH;
 
-  //const location = useLocation();
   const location = { state: { numberOfXpubs: 1, signaturesNeeded: 1 } };
   const { numberOfXpubs, signaturesNeeded } = location.state as {
     numberOfXpubs: number;
@@ -70,18 +63,16 @@ function Playground() {
     setBtcPrice(usdPrice);
   };
 
-  // const getBtcPriceResponVjse = useGetBtcPrice({
-  //   onSuccess: handleGetBtcPrice,
-  //   onError: () => {
-  //     notifications.show({
-  //       title: "Fetching current btc price failed",
-  //       message: "Please set the price manually.",
-  //       color: "red",
-  //     });
-  //   },
-  // });
-
-  //const queryClient = useQueryClient();
+  const getBtcPriceResponse = useGetBtcPrice({
+    onSuccess: handleGetBtcPrice,
+    onError: () => {
+      notifications.show({
+        title: "Fetching current btc price failed",
+        message: "Please set the price manually.",
+        color: "red",
+      });
+    },
+  });
 
   const scaleOptions: ScaleOption[] = [
     { value: "100", label: "100" },
@@ -100,25 +91,24 @@ function Playground() {
   ];
   const [feeScale, setFeeScale] = useState(scaleOptions[1]);
   const [minFeeScale, setMinFeeScale] = useState(minScaleOptions[0]);
-  const [feeRate, setFeeRate] = useState(parseInt(minFeeScale.value));
+  const [feeRate, setFeeRate] = useState(parseInt("1"));
 
   // Initially set the current future fee rate to the current medium fee rate
-  // if it was not set by an imported wallet.
   // Also always set the consolidation fee rate to the current medium fee rate.
-  // useEffect(() => {
-  //   if (
-  //     getCurrentFeesQueryRequest.isSuccess &&
-  //     feeRate.toString() === minFeeScale.value
-  //   ) {
-  //     setFeeRate(parseInt(`${getCurrentFeesQueryRequest.data?.medium}`));
-  //   }
+  useEffect(() => {
+    if (
+      getCurrentFeesQueryRequest.isSuccess &&
+      feeRate.toString() === minFeeScale.value
+    ) {
+      setFeeRate(parseInt(`${getCurrentFeesQueryRequest.data?.medium}`));
+    }
 
-  //   if (getCurrentFeesQueryRequest.isSuccess) {
-  //     setConsolidationFeeRate(
-  //       parseInt(`${getCurrentFeesQueryRequest.data?.medium}`)
-  //     );
-  //   }
-  // }, [getCurrentFeesQueryRequest.isSuccess]);
+    if (getCurrentFeesQueryRequest.isSuccess) {
+      setConsolidationFeeRate(
+        parseInt(`${getCurrentFeesQueryRequest.data?.medium}`)
+      );
+    }
+  }, [getCurrentFeesQueryRequest.isSuccess]);
 
   const [feeRateColorMapValues, setFeeRateColorMapValues] = useState<
     FeeRateColor[]
@@ -360,19 +350,10 @@ function Playground() {
         </div>
       </SettingsSlideout>
 
-      <header className="border-2 border-gray-200 border-l-0 border-r-0 mb-4 h-16">
+      <header className="border-2 border-gray-200 border-l-0 border-r-0 mb-4 h-16 mt-4">
         <Container size="xl" className="flex justify-between items-center h-16">
           <CurrentFeeRates />
           <Group gap={5} visibleFrom="xs">
-            <p className="mr-5">
-              Balance:{" "}
-              {/* {btcSatHandler(
-                Number(getBalanceQueryRequest?.data?.total).toLocaleString(),
-                btcMetric
-              )}{" "} */}
-              {btcMetric === BtcMetric.BTC ? "BTC" : "sats"}
-            </p>
-
             <ActionIcon
               onClick={() => setIsShowSettingsSlideout(true)}
               variant="filled"
@@ -469,9 +450,8 @@ function Playground() {
         <div className="flex flex-col">
           <div className="flex flex-row items-center justify-between w-3/4 ml-2 border p-2 mb-2 bg-white">
             <h1 className="text-center font-bold text-xl mt-4 mr-4 mb-2">
-              Add uxtos
+              Add inputs
             </h1>
-            {/* amount based of if sats or btc is picked  */}
             <NumberInput
               label={`utxo amount (${
                 btcMetric === BtcMetric.BTC ? "BTC" : "sats"
@@ -503,7 +483,7 @@ function Playground() {
             feeRate={feeRate}
             utxos={utxos}
             walletType={ScriptTypes.P2WPKH}
-            isLoading={false}
+            isLoading={getBtcPriceResponse.isLoading}
             isError={false}
             currentBatchedTxData={currentBatchedTxData}
             setCurrentBatchedTxData={setCurrentBatchedTxData}

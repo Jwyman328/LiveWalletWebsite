@@ -1,10 +1,10 @@
 import { useGetCurrentFees } from "../hooks/utxos";
 export const CurrentFeeRates = () => {
-  //const getCurrentFeesQueryRequest = useGetCurrentFees();
+  const getCurrentFeesQueryRequest = useGetCurrentFees();
   const feeRates = [
-    { title: "Low", value: 4 },
-    { title: "Medium", value: 5 },
-    { title: "High", value: 6 },
+    { title: "Low", value: getCurrentFeesQueryRequest?.data?.low },
+    { title: "Medium", value: getCurrentFeesQueryRequest?.data?.medium },
+    { title: "High", value: getCurrentFeesQueryRequest?.data?.high },
   ];
 
   const Fee = ({ title, rate }: { title: string; rate: string }) => {
