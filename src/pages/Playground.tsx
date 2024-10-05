@@ -13,20 +13,31 @@ import {
   ActionIcon,
   NumberInput,
   Collapse,
+  Tooltip,
+  RangeSlider,
+  RangeSliderValue,
 } from "@mantine/core";
 import { BtcMetric } from "../types/btcSatHandler";
 import { SettingsSlideout } from "../components/SettingsSlideout";
-import { IconAdjustments } from "@tabler/icons-react";
+import { IconAdjustments, IconInfoCircle } from "@tabler/icons-react";
 import { FeeRateColorChangeInputs } from "../components/FeeRateColorChangeInputs";
 import {
   CreateTxFeeEstimationResponseType,
   GetBTCPriceResponseType,
   Utxo,
 } from "../api/types";
-import { ScriptTypes } from "../types/scriptTypes";
 import { notifications } from "@mantine/notifications";
 import { useGetBtcPrice } from "../hooks/price";
 import { useGetCurrentFees } from "../hooks/utxos";
+import {
+  multiSigScriptTypeOptions,
+  PolicyTypeOption,
+  policyTypeOptions,
+  ScriptTypeOption,
+  scriptTypeOptions,
+  singleSigScriptTypeOptions,
+} from "../components/formOptions";
+import { PolicyTypes } from "../types/policyTypes";
 
 export type ScaleOption = {
   value: string;
@@ -51,12 +62,6 @@ function Playground() {
   const [btcPrice, setBtcPrice] = useState(0);
 
   const [txMode, setTxMode] = useState(TxMode.SINGLE);
-
-  const location = { state: { numberOfXpubs: 1, signaturesNeeded: 1 } };
-  const { numberOfXpubs, signaturesNeeded } = location.state as {
-    numberOfXpubs: number;
-    signaturesNeeded: number;
-  };
 
   const handleGetBtcPrice = (data: GetBTCPriceResponseType) => {
     const usdPrice = data.USD;
@@ -211,6 +216,16 @@ function Playground() {
 
     setFeeRateColorMapValues(newFeeRateColorMapValues);
   };
+  const [signaturesNeeded, setSignaturesNeeded] = useState(1);
+  const [numberOfXpubs, setNumberOfXpubs] = useState(1);
+
+  const handleNofMChange = (value: RangeSliderValue) => {
+    const M = value[0];
+    const N = value[1];
+
+    setSignaturesNeeded(M);
+    setNumberOfXpubs(N);
+  };
 
   const setMinFeeRate = (option: { value: string; label: string }) => {
     if (feeRate < Number(option.value)) {
@@ -234,6 +249,10 @@ function Playground() {
       setCurrentBatchedTxData(null);
     }
   };
+
+  const [scriptType, setScriptType] = useState<ScriptTypeOption>(
+    scriptTypeOptions[1]
+  );
 
   // switching txMode should clear batchTxData
   useEffect(() => {
@@ -262,11 +281,15 @@ function Playground() {
 
   const [isShowSettingsSlideout, setIsShowSettingsSlideout] = useState(false);
   const [consolidationFeeRate, setConsolidationFeeRate] = useState(1);
-
+  const formItemWidth = "w-full";
+  const labelWidth = "w-full";
   const onConsolidationFeeRate = (consolidationFeeRate: string | number) => {
     setConsolidationFeeRate(Number(consolidationFeeRate));
     setCurrentBatchedTxData(null);
   };
+  const [policyType, setPolicyType] = useState<PolicyTypeOption>(
+    policyTypeOptions[0]
+  );
 
   const onBtcPriceChange = (netBtcPrice: string | number) => {
     setBtcPrice(Number(netBtcPrice));
@@ -337,20 +360,116 @@ function Playground() {
                 label={<p>Max fee rate</p>}
               />
             </div>
-
-            <FeeRateColorChangeInputs
-              numberOfInputs={feeRateColorMapValues.length}
-              feeRateColorMapValues={feeRateColorMapValues}
-              changeFeeRateColorPercent={changeFeeRateColorPercent}
-              changeFeeRateColor={changeFeeRateColor}
-              removeFeeRateColor={removeFeeRateColor}
-              addFeeRateColor={addFeeRateColor}
-            />
           </div>
+          <InputLabel className={`mt-0 mb-2 ${labelWidth}`}>
+            Policy type
+          </InputLabel>
+          <Select
+            placeholder="Select policy type"
+            allowDeselect={false}
+            className={formItemWidth}
+            data={policyTypeOptions}
+            value={policyType.value}
+            onChange={(_value, option) => {
+              if (option) {
+                // If going from multi to single signature
+                if (
+                  option.value === PolicyTypes.SINGLE_SIGNATURE &&
+                  policyType.value === PolicyTypes.MULTI_SIGNATURE
+                ) {
+                  setSignaturesNeeded(1);
+                  setNumberOfXpubs(1);
+                  setScriptType(singleSigScriptTypeOptions[2]);
+                }
+
+                // If going from single to multi signature
+                if (
+                  option.value === PolicyTypes.MULTI_SIGNATURE &&
+                  policyType.value === PolicyTypes.SINGLE_SIGNATURE
+                ) {
+                  setSignaturesNeeded(2);
+                  setNumberOfXpubs(3);
+
+                  setScriptType(multiSigScriptTypeOptions[2]);
+                }
+
+                setPolicyType(option as PolicyTypeOption);
+              }
+            }}
+          />
+
+          <InputLabel className={`mt-4 ${labelWidth}`}>Script type</InputLabel>
+          <Select
+            data-testid="script-type-select"
+            allowDeselect={false}
+            className={`mb-0 ${formItemWidth}`}
+            data={
+              signaturesNeeded === 1 && numberOfXpubs === 1
+                ? singleSigScriptTypeOptions
+                : multiSigScriptTypeOptions
+            }
+            value={scriptType ? scriptType.value : null}
+            onChange={(_value, option) => {
+              if (option) {
+                setScriptType(option as ScriptTypeOption);
+              }
+            }}
+          />
+
+          {policyType.value === PolicyTypes.MULTI_SIGNATURE && (
+            <>
+              <div
+                className={`flex flex-row items-center ${labelWidth} mb-2 mt-4`}
+              >
+                <InputLabel className={`mr-1`}>M of N</InputLabel>
+                <Tooltip
+                  withArrow
+                  w={300}
+                  multiline
+                  label="M is the number of signers and N is the number of xpubs. M must be less than or equal to N."
+                >
+                  <IconInfoCircle style={{ width: "14px", height: "14px" }} />
+                </Tooltip>
+              </div>
+              <RangeSlider
+                data-testid="m-of-n-slider"
+                className="mt-0 mb-4 w-96"
+                style={{ marginBottom: "2rem" }}
+                minRange={0.2}
+                min={1}
+                max={9}
+                step={1}
+                marks={[
+                  { value: 1, label: "1" },
+                  { value: 2, label: "2" },
+                  { value: 3, label: "3" },
+                  { value: 4, label: "4" },
+                  { value: 5, label: "5" },
+                  { value: 6, label: "6" },
+                  { value: 7, label: "7" },
+                  { value: 8, label: "8" },
+                  { value: 9, label: "9" },
+                ]}
+                defaultValue={[signaturesNeeded, numberOfXpubs]}
+                onChange={handleNofMChange}
+                label={null}
+              />
+            </>
+          )}
         </div>
+        <Collapse in={false}>
+          <FeeRateColorChangeInputs
+            numberOfInputs={feeRateColorMapValues.length}
+            feeRateColorMapValues={feeRateColorMapValues}
+            changeFeeRateColorPercent={changeFeeRateColorPercent}
+            changeFeeRateColor={changeFeeRateColor}
+            removeFeeRateColor={removeFeeRateColor}
+            addFeeRateColor={addFeeRateColor}
+          />
+        </Collapse>
       </SettingsSlideout>
 
-      <header className="border-2 border-gray-200 border-l-0 border-r-0 mb-4 h-16 mt-4">
+      <header className="border-2 border-gray-200 border-l-0 border-r-0 mb-2 h-16 mt-4">
         <Container size="xl" className="flex justify-between items-center h-16">
           <CurrentFeeRates />
           <Group gap={5} visibleFrom="xs">
@@ -398,7 +517,7 @@ function Playground() {
             </div>
           </Collapse>
           <div>
-            <h1 className="text-center font-bold text-xl mt-4">
+            <h1 className="text-center font-bold text-xl mt-0">
               Future Fee Environment (sat/vB)
             </h1>
             <div className="mb-10">
@@ -447,34 +566,36 @@ function Playground() {
             />
           </div>
         </div>
-        <div className="flex flex-col">
-          <div className="flex flex-row items-center justify-between w-3/4 ml-2 border p-2 mb-2 bg-white">
-            <h1 className="text-center font-bold text-xl mt-4 mr-4 mb-2">
-              Add inputs
-            </h1>
-            <NumberInput
-              label={`utxo amount (${
-                btcMetric === BtcMetric.BTC ? "BTC" : "sats"
-              })`}
-              data-testid="consolidation-fee-rate-input"
-              className={`mb-4 w-40 mt-2`}
-              allowNegative={false}
-              clampBehavior="strict"
-              value={currentAddUtxoValue}
-              // @ts-ignore
-              onChange={setCurrentAddUtxoValue}
-              thousandSeparator=","
-              min={1}
-              max={10000000}
-            />
-            <Button
-              disabled={false}
-              size="l"
-              className="w-12"
-              onClick={handleNextUtxoAdded}
-            >
-              Add
-            </Button>
+        <div className="flex flex-col ">
+          <div className="w-3/4 ml-2 border p-2 pt-0 mb-2 bg-white">
+            <h1 className=" font-bold text-xl mt-0 mr-4 mb-2">Add inputs</h1>
+            <div className="">
+              <div className="flex flex-row items-end">
+                <NumberInput
+                  label={`utxo amount (${
+                    btcMetric === BtcMetric.BTC ? "BTC" : "sats"
+                  })`}
+                  data-testid="consolidation-fee-rate-input"
+                  className={`mb-0 w-40 mt-0`}
+                  allowNegative={false}
+                  clampBehavior="strict"
+                  value={currentAddUtxoValue}
+                  // @ts-ignore
+                  onChange={setCurrentAddUtxoValue}
+                  thousandSeparator=","
+                  min={1}
+                  max={10000000}
+                />
+                <Button
+                  disabled={false}
+                  size="l"
+                  className="ml-4 w-12"
+                  onClick={handleNextUtxoAdded}
+                >
+                  Add
+                </Button>
+              </div>
+            </div>
           </div>
 
           <UtxosDisplay
@@ -482,14 +603,14 @@ function Playground() {
             btcMetric={btcMetric}
             feeRate={feeRate}
             utxos={utxos}
-            walletType={ScriptTypes.P2WPKH}
+            walletType={scriptType.value}
             isLoading={getBtcPriceResponse.isLoading}
             isError={false}
             currentBatchedTxData={currentBatchedTxData}
             setCurrentBatchedTxData={setCurrentBatchedTxData}
             btcPrice={btcPrice}
-            numberOfXpubs={numberOfXpubs || 1}
-            signaturesNeeded={signaturesNeeded || 1}
+            numberOfXpubs={numberOfXpubs}
+            signaturesNeeded={signaturesNeeded}
             txMode={txMode}
             consolidationFeeRate={consolidationFeeRate}
             setUtxos={setUtxos}

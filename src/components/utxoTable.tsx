@@ -14,8 +14,8 @@ import { Utxo, UtxoRequestParamWithAmount } from "../api/types";
 import { createTxFeeEstimate } from "../bitcoin/txFeeCalculation";
 import { ScriptTypes } from "../types/scriptTypes";
 import { BtcMetric, btcSatHandler } from "../types/btcSatHandler";
-import { Collapse, Button } from "@mantine/core";
-import { IconCircleCheck, IconCircleX } from "@tabler/icons-react";
+import { Collapse, ActionIcon } from "@mantine/core";
+import { IconCircleCheck, IconCircleX, IconTrash } from "@tabler/icons-react";
 
 const sectionColor = "rgb(1, 67, 97)";
 
@@ -167,17 +167,16 @@ export const UtxoTable = ({
       header: "Remove",
       accessorKey: "remove",
       size: 100,
+      enableSorting: false,
       Cell: ({ row }: { row: any }) => {
-        const amount = btcSatHandler(
-          Number(row.original.amount).toFixed(2).toLocaleString(),
-          btcMetric
-        );
-
         return (
-          <div>
-            <Button onClick={() => deleteUtxo(row.original.txid)}>
-              Delete
-            </Button>
+          <div className="flex items-center justify-center">
+            <ActionIcon
+              color="red"
+              onClick={() => deleteUtxo(row.original.txid)}
+            >
+              <IconTrash size={16} />
+            </ActionIcon>
           </div>
         );
       },
