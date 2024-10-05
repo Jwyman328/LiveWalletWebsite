@@ -295,22 +295,6 @@ function Playground() {
     setBtcPrice(Number(netBtcPrice));
   };
 
-  const [currentAddUtxoValue, setCurrentAddUtxoValue] = useState("1");
-  const handleNextUtxoAdded = () => {
-    const newUtxos = [...utxos];
-    const randomUuid = Math.random();
-    const amountInSats =
-      btcMetric === BtcMetric.SATS
-        ? currentAddUtxoValue
-        : Number(currentAddUtxoValue) * 100000000;
-    newUtxos.push({
-      amount: Number(amountInSats),
-      txid: randomUuid.toString(),
-      vout: 0,
-    });
-    setUtxos(newUtxos);
-  };
-
   const maxToggleContainerWidth =
     txMode !== TxMode.CONSOLIDATE ? { maxWidth: "1000px" } : {};
   return (
@@ -567,37 +551,6 @@ function Playground() {
           </div>
         </div>
         <div className="flex flex-col ">
-          <div className="w-3/4 ml-2 border p-2 pt-0 mb-2 bg-white">
-            <h1 className=" font-bold text-xl mt-0 mr-4 mb-2">Add inputs</h1>
-            <div className="">
-              <div className="flex flex-row items-end">
-                <NumberInput
-                  label={`utxo amount (${
-                    btcMetric === BtcMetric.BTC ? "BTC" : "sats"
-                  })`}
-                  data-testid="consolidation-fee-rate-input"
-                  className={`mb-0 w-40 mt-0`}
-                  allowNegative={false}
-                  clampBehavior="strict"
-                  value={currentAddUtxoValue}
-                  // @ts-ignore
-                  onChange={setCurrentAddUtxoValue}
-                  thousandSeparator=","
-                  min={1}
-                  max={10000000}
-                />
-                <Button
-                  disabled={false}
-                  size="l"
-                  className="ml-4 w-12"
-                  onClick={handleNextUtxoAdded}
-                >
-                  Add
-                </Button>
-              </div>
-            </div>
-          </div>
-
           <UtxosDisplay
             feeRateColorValues={feeRateColorMapValues}
             btcMetric={btcMetric}

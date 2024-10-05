@@ -51,7 +51,7 @@ type UtxosDisplayProps = {
   numberOfXpubs: number;
   txMode: TxMode;
   consolidationFeeRate: number;
-  setUtxos: any;
+  setUtxos: React.Dispatch<React.SetStateAction<Utxo[]>>;
 };
 
 export const UtxosDisplay = ({
@@ -81,6 +81,22 @@ export const UtxosDisplay = ({
   const [selectedUtxos, setSelectedUtxos] = useState<
     UtxoRequestParamWithAmount[]
   >([]);
+
+  const [currentAddUtxoValue, setCurrentAddUtxoValue] = useState("1");
+  const handleNextUtxoAdded = () => {
+    const newUtxos = [...utxos];
+    const randomUuid = Math.random();
+    const amountInSats =
+      btcMetric === BtcMetric.SATS
+        ? currentAddUtxoValue
+        : Number(currentAddUtxoValue) * 100000000;
+    newUtxos.push({
+      amount: Number(amountInSats),
+      txid: randomUuid.toString(),
+      vout: 0,
+    });
+    setUtxos(newUtxos);
+  };
 
   const estimateIt = () => {
     const realFeeRate =
@@ -225,6 +241,10 @@ export const UtxosDisplay = ({
     );
   };
 
+  const isConsolidateDisabled = selectedUtxos?.length < 2;
+  const addUtxoHeight = "120px";
+  const marginToCompensateForAddUtxoHeight = "128px";
+
   return (
     <div className={"w-full mb-1 ml-1"}>
       <div className="relative flex flex-row ">
@@ -247,58 +267,107 @@ export const UtxosDisplay = ({
           }}
         />
         <div className="flex flex-row">
-          <UtxoTable
-            utxos={utxos}
-            areRowsSelectable={
-              txMode === TxMode.BATCH || txMode === TxMode.CONSOLIDATE
-            }
-            onRowSelection={onRowSelection}
-            walletType={walletType}
-            signaturesNeeded={signaturesNeeded}
-            numberOfXpubs={numberOfXpubs}
-            receivingOutputCount={receivingOutputCount}
-            feeRate={feeRate}
-            getFeeRateColor={getFeeRateColor}
-            btcPrice={btcPrice}
-            btcMetric={btcMetric}
-            isShowTxId={false}
-            setUtxos={setUtxos}
-            areRowsDeletable={true}
-          />
-
-          {txMode === TxMode.CONSOLIDATE && (
-            <div className="ml-4 flex flex-col justify-between">
-              <UtxoTable
-                utxos={consolidationUtxo}
-                areRowsSelectable={false}
-                onRowSelection={() => {}}
-                walletType={walletType}
-                signaturesNeeded={signaturesNeeded}
-                numberOfXpubs={numberOfXpubs}
-                receivingOutputCount={1}
-                feeRate={feeRate}
-                getFeeRateColor={getFeeRateColor}
-                btcPrice={btcPrice}
-                btcMetric={btcMetric}
-                title="Output"
-                isShowTxId={false}
-                setUtxos={setUtxos}
-                areRowsDeletable={false}
-              />
-
-              <div className="mt-auto">
-                <InputLabel
-                  style={sectionHeaderStyles}
-                  className="font-semibold mt-2 mr-1"
+          <div>
+            <div className="flex flex-row">
+              <div className="flex flex-col">
+                <div
+                  className=" border p-4 pt-2 mb-2 bg-white"
+                  style={{ height: addUtxoHeight }}
                 >
-                  {txMode === TxMode.CONSOLIDATE ? "Consolidation " : ""}
-                  Fees
-                </InputLabel>
-
-                <DisplayBatchTxData />
+                  <h1
+                    style={{
+                      color: sectionColor,
+                    }}
+                    className="text-2xl font-semibold"
+                  >
+                    Add inputs
+                  </h1>
+                  <div>
+                    <div className="flex flex-row items-end">
+                      <NumberInput
+                        label={`utxo amount (${
+                          btcMetric === BtcMetric.BTC ? "BTC" : "sats"
+                        })`}
+                        data-testid="consolidation-fee-rate-input"
+                        className={`mb-0 w-40 mt-0`}
+                        allowNegative={false}
+                        clampBehavior="strict"
+                        value={currentAddUtxoValue}
+                        // @ts-ignore
+                        onChange={setCurrentAddUtxoValue}
+                        thousandSeparator=","
+                        min={1}
+                        max={10000000}
+                      />
+                      <Button
+                        disabled={false}
+                        size="l"
+                        className="ml-4 w-12"
+                        onClick={handleNextUtxoAdded}
+                      >
+                        Add
+                      </Button>
+                    </div>
+                  </div>
+                </div>
+                <UtxoTable
+                  utxos={utxos}
+                  areRowsSelectable={
+                    txMode === TxMode.BATCH || txMode === TxMode.CONSOLIDATE
+                  }
+                  onRowSelection={onRowSelection}
+                  walletType={walletType}
+                  signaturesNeeded={signaturesNeeded}
+                  numberOfXpubs={numberOfXpubs}
+                  receivingOutputCount={receivingOutputCount}
+                  feeRate={feeRate}
+                  getFeeRateColor={getFeeRateColor}
+                  btcPrice={btcPrice}
+                  btcMetric={btcMetric}
+                  isShowTxId={false}
+                  setUtxos={setUtxos}
+                  areRowsDeletable={true}
+                />
               </div>
+
+              {txMode === TxMode.CONSOLIDATE && (
+                <div
+                  className="ml-4 flex flex-col justify-between"
+                  style={{ marginTop: marginToCompensateForAddUtxoHeight }}
+                >
+                  <UtxoTable
+                    utxos={consolidationUtxo}
+                    areRowsSelectable={false}
+                    onRowSelection={() => {}}
+                    walletType={walletType}
+                    signaturesNeeded={signaturesNeeded}
+                    numberOfXpubs={numberOfXpubs}
+                    receivingOutputCount={1}
+                    feeRate={feeRate}
+                    getFeeRateColor={getFeeRateColor}
+                    btcPrice={btcPrice}
+                    btcMetric={btcMetric}
+                    title="Output"
+                    isShowTxId={false}
+                    setUtxos={setUtxos}
+                    areRowsDeletable={false}
+                  />
+
+                  <div className="mt-auto">
+                    <InputLabel
+                      style={sectionHeaderStyles}
+                      className="font-semibold mt-2 mr-1"
+                    >
+                      {txMode === TxMode.CONSOLIDATE ? "Consolidation " : ""}
+                      Fees
+                    </InputLabel>
+
+                    <DisplayBatchTxData />
+                  </div>
+                </div>
+              )}
             </div>
-          )}
+          </div>
         </div>
 
         <div
@@ -312,8 +381,15 @@ export const UtxosDisplay = ({
           >
             <>
               <InputLabel
-                style={sectionHeaderStyles}
                 className="font-semibold mt-0 mr-1"
+                style={
+                  txMode !== TxMode.CONSOLIDATE
+                    ? {
+                        marginTop: marginToCompensateForAddUtxoHeight,
+                        ...sectionHeaderStyles,
+                      }
+                    : sectionHeaderStyles
+                }
               >
                 Outputs
               </InputLabel>
@@ -384,16 +460,13 @@ export const UtxosDisplay = ({
         <div className="flex flex-row mt-4 mb-4 h-14">
           <Button
             fullWidth
-            disabled={
-              selectedUtxos?.length < 2 ||
-              (txMode === TxMode.CONSOLIDATE && isSavePSBTEnabled)
-            }
+            disabled={isConsolidateDisabled}
             onClick={calculateFeeEstimate}
             size="xl"
             style={{
               height: "100%",
-              borderColor: selectedUtxos?.length < 2 ? "#b8b8b8" : undefined,
-              borderWidth: selectedUtxos?.length < 2 ? "2px" : undefined,
+              borderColor: isConsolidateDisabled ? "#b8b8b8" : undefined,
+              borderWidth: isConsolidateDisabled ? "2px" : undefined,
               transition: "background-color 0.3s ease",
             }}
           >
