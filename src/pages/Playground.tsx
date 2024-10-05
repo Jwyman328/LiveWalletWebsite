@@ -38,6 +38,7 @@ import {
   singleSigScriptTypeOptions,
 } from "../components/formOptions";
 import { PolicyTypes } from "../types/policyTypes";
+import { useCurrentScreenWidth } from "../hooks/screenWidth";
 
 export type ScaleOption = {
   value: string;
@@ -58,7 +59,7 @@ function Playground() {
   const [currentBatchedTxData, setCurrentBatchedTxData] = useState<
     CreateTxFeeEstimationResponseType | undefined | null
   >(null);
-  const [btcMetric, setBtcMetric] = useState(BtcMetric.BTC);
+  const [btcMetric, setBtcMetric] = useState(BtcMetric.SATS);
   const [btcPrice, setBtcPrice] = useState(0);
 
   const [txMode, setTxMode] = useState(TxMode.SINGLE);
@@ -297,7 +298,10 @@ function Playground() {
 
   const maxToggleContainerWidth =
     txMode !== TxMode.CONSOLIDATE ? { maxWidth: "1000px" } : {};
-  return (
+
+  const screenWidth = useCurrentScreenWidth();
+  const isRenderable = screenWidth > 920;
+  return isRenderable ? (
     <div className="h-full overflow-y-scroll">
       <SettingsSlideout
         opened={isShowSettingsSlideout}
@@ -473,7 +477,7 @@ function Playground() {
       </header>
 
       <div className="flex flex-row justify-evenly"></div>
-      <div className="mx-4 flex flex-col items-center overflow-x-scroll">
+      <div className="flex flex-col items-center overflow-x-scroll">
         <div
           className={`flex flex-row w-full justify-around`}
           style={maxToggleContainerWidth}
@@ -570,6 +574,10 @@ function Playground() {
           />
         </div>
       </div>
+    </div>
+  ) : (
+    <div className="h-full text-center mt-8">
+      Please use a larger screen to access the live wallet playground
     </div>
   );
 }

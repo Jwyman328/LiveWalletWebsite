@@ -19,6 +19,7 @@ import { BtcMetric, btcSatHandler } from "../types/btcSatHandler";
 import { UtxoTable } from "./utxoTable";
 import { TxMode } from "../pages/Playground";
 import { createTxFeeEstimate } from "../bitcoin/txFeeCalculation";
+import { useCurrentScreenWidth } from "../hooks/screenWidth";
 
 const sectionColor = "rgb(1, 67, 97)";
 
@@ -82,7 +83,9 @@ export const UtxosDisplay = ({
     UtxoRequestParamWithAmount[]
   >([]);
 
-  const [currentAddUtxoValue, setCurrentAddUtxoValue] = useState("1");
+  const [currentAddUtxoValue, setCurrentAddUtxoValue] = useState<
+    string | number
+  >(1);
   const handleNextUtxoAdded = () => {
     const newUtxos = [...utxos];
     const randomUuid = Math.random();
@@ -186,7 +189,7 @@ export const UtxosDisplay = ({
   };
 
   const DisplayBatchTxData = () => {
-    const borderClasses = "p-2";
+    const borderClasses = "p-2 w-80";
     if (!currentBatchedTxData || !selectedUtxos?.length) {
       return (
         <div className={borderClasses}>
@@ -240,10 +243,19 @@ export const UtxosDisplay = ({
       </div>
     );
   };
-
+  const screenWidth = useCurrentScreenWidth();
+  const isSkinnyViewNeeded = screenWidth < 1300;
   const isConsolidateDisabled = selectedUtxos?.length < 2;
   const addUtxoHeight = "120px";
-  const marginToCompensateForAddUtxoHeight = "128px";
+  const marginToCompensateForAddUtxoHeight = isSkinnyViewNeeded
+    ? "12px"
+    : "128px";
+  const container = !isSkinnyViewNeeded ? "flex flex-row" : "flex flex-col";
+  const outputContainerStyles =
+    (isSkinnyViewNeeded && TxMode.CONSOLIDATE === txMode) ||
+    txMode === TxMode.CONSOLIDATE
+      ? " flex flex-col"
+      : " flex flex-col ml-6";
 
   return (
     <div className={"w-full mb-1 ml-1"}>
@@ -268,7 +280,7 @@ export const UtxosDisplay = ({
         />
         <div className="flex flex-row">
           <div>
-            <div className="flex flex-row">
+            <div className={container}>
               <div className="flex flex-col">
                 <div
                   className=" border p-4 pt-2 mb-2 bg-white"
@@ -293,10 +305,10 @@ export const UtxosDisplay = ({
                         allowNegative={false}
                         clampBehavior="strict"
                         value={currentAddUtxoValue}
-                        // @ts-ignore
                         onChange={setCurrentAddUtxoValue}
                         thousandSeparator=","
-                        min={1}
+                        decimalScale={btcMetric === BtcMetric.SATS ? 0 : 8}
+                        min={btcMetric === BtcMetric.SATS ? 1 : 0.00000001}
                         max={10000000}
                       />
                       <Button
@@ -332,7 +344,9 @@ export const UtxosDisplay = ({
 
               {txMode === TxMode.CONSOLIDATE && (
                 <div
-                  className="ml-4 flex flex-col justify-between"
+                  className={`${
+                    isSkinnyViewNeeded ? "ml-0" : "ml-4"
+                  } flex flex-col justify-between`}
                   style={{ marginTop: marginToCompensateForAddUtxoHeight }}
                 >
                   <UtxoTable
@@ -372,7 +386,7 @@ export const UtxosDisplay = ({
 
         <div
           style={{ minWidth: txMode !== TxMode.CONSOLIDATE ? "100px" : "0px" }}
-          className=" flex flex-col ml-6"
+          className={outputContainerStyles}
         >
           <Collapse
             in={txMode !== TxMode.CONSOLIDATE}
