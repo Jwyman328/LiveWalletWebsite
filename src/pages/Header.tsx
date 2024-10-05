@@ -8,6 +8,7 @@ export const Header = () => {
   const links = [
     { link: "/", label: "Home" },
     { link: "/download", label: "Download" },
+    { link: "/playground", label: "Playground" },
   ];
 
   const [opened, { toggle }] = useDisclosure(true);

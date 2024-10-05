@@ -11,6 +11,7 @@ import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import { createHashRouter, RouterProvider, Outlet } from "react-router-dom";
 import { Header } from "./pages/Header";
 import { Download } from "./pages/Download";
+import Playground from "./pages/Playground";
 const Layout = () => {
   return (
     <div>
@@ -36,6 +37,10 @@ const router = createHashRouter([
       {
         path: "download", // Download route
         element: <Download />,
+      },
+      {
+        path: "playground", // playground route
+        element: <Playground />,
       },
       // Add more routes here as needed
     ],
