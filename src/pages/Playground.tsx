@@ -300,7 +300,12 @@ function Playground() {
     txMode !== TxMode.CONSOLIDATE ? { maxWidth: "1000px" } : {};
 
   const screenWidth = useCurrentScreenWidth();
-  const isRenderable = screenWidth > 920;
+  const isRenderable = screenWidth > 670;
+  const headerClasses =
+    screenWidth < 900 && txMode === TxMode.CONSOLIDATE
+      ? "flex flex-col w-full justify-around items-center"
+      : "flex flex-row w-full justify-around";
+
   return isRenderable ? (
     <div className="h-full overflow-y-scroll">
       <SettingsSlideout
@@ -478,10 +483,7 @@ function Playground() {
 
       <div className="flex flex-row justify-evenly"></div>
       <div className="flex flex-col items-center overflow-x-scroll">
-        <div
-          className={`flex flex-row w-full justify-around`}
-          style={maxToggleContainerWidth}
-        >
+        <div className={headerClasses} style={maxToggleContainerWidth}>
           <Collapse
             in={txMode === TxMode.CONSOLIDATE}
             transitionDuration={300}

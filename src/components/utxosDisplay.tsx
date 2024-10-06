@@ -222,7 +222,6 @@ export const UtxosDisplay = ({
     return isSpendable ? (
       <div className={borderClasses} style={{ backgroundColor: bgColor }}>
         <p style={sectionLabelStyles}>
-          {/* @ts-ignore */}
           Total fees: ~{btcSatHandler(fee.toLocaleString(), btcMetric)}
           {btcMetric === BtcMetric.BTC ? " BTC" : " sats"}
         </p>
@@ -243,23 +242,36 @@ export const UtxosDisplay = ({
       </div>
     );
   };
-  const screenWidth = useCurrentScreenWidth();
-  const isSkinnyViewNeeded = screenWidth < 1300;
+
   const isConsolidateDisabled = selectedUtxos?.length < 2;
-  const addUtxoHeight = "120px";
-  const marginToCompensateForAddUtxoHeight = isSkinnyViewNeeded
-    ? "12px"
-    : "128px";
-  const container = !isSkinnyViewNeeded ? "flex flex-row" : "flex flex-col";
+
+  const screenWidth = useCurrentScreenWidth();
+  const isConsolidationBreakPointNeeded =
+    TxMode.CONSOLIDATE === txMode && screenWidth < 1300;
+  const isSingleOrBatchBreakPointNeeded =
+    (TxMode.BATCH === txMode && screenWidth < 1080) ||
+    (TxMode.SINGLE === txMode && screenWidth < 860);
+  const inputsContainer = !isConsolidationBreakPointNeeded
+    ? "flex flex-row"
+    : "flex flex-col";
   const outputContainerStyles =
-    (isSkinnyViewNeeded && TxMode.CONSOLIDATE === txMode) ||
-    txMode === TxMode.CONSOLIDATE
+    isConsolidationBreakPointNeeded || txMode === TxMode.CONSOLIDATE
       ? " flex flex-col"
       : " flex flex-col ml-6";
 
+  const utxosDisplayContainer = isSingleOrBatchBreakPointNeeded
+    ? "relative flex flex-col"
+    : "relative flex flex-row ";
+
+  const addUtxoHeight = "120px";
+  const marginToCompensateForAddUtxoHeight =
+    isConsolidationBreakPointNeeded || isSingleOrBatchBreakPointNeeded
+      ? "12px"
+      : "128px";
+
   return (
     <div className={"w-full mb-1 ml-1"}>
-      <div className="relative flex flex-row ">
+      <div className={utxosDisplayContainer}>
         <LoadingOverlay
           visible={isLoading}
           zIndex={1000}
@@ -280,7 +292,7 @@ export const UtxosDisplay = ({
         />
         <div className="flex flex-row">
           <div>
-            <div className={container}>
+            <div className={inputsContainer}>
               <div className="flex flex-col">
                 <div
                   className=" border p-4 pt-2 mb-2 bg-white"
@@ -345,7 +357,7 @@ export const UtxosDisplay = ({
               {txMode === TxMode.CONSOLIDATE && (
                 <div
                   className={`${
-                    isSkinnyViewNeeded ? "ml-0" : "ml-4"
+                    isConsolidationBreakPointNeeded ? "ml-0" : "ml-4"
                   } flex flex-col justify-between`}
                   style={{ marginTop: marginToCompensateForAddUtxoHeight }}
                 >
