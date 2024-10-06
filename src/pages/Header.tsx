@@ -1,17 +1,24 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import { Group, Burger } from "@mantine/core";
 import { useDisclosure } from "@mantine/hooks";
 import classes from "./HeaderSimple.module.css";
-import { Link } from "react-router-dom";
+import { Link, useLocation } from "react-router-dom";
 
 export const Header = () => {
   const links = [
     { link: "/", label: "Home" },
     { link: "/download", label: "Download" },
+    { link: "/playground", label: "Sandbox" },
   ];
 
+  const location = useLocation();
+
   const [opened, { toggle }] = useDisclosure(true);
-  const [active, setActive] = useState(links[0].link);
+  const [active, setActive] = useState(location?.pathname);
+
+  useEffect(() => {
+    setActive(location.pathname);
+  }, [location.pathname]);
 
   const items = links.map((link) => (
     <Link
