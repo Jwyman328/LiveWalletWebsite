@@ -215,8 +215,7 @@ export const UtxoTable = ({
           );
 
           try {
-            //@ts-ignore
-            amountUSD = Big(btcPrice).times(btcAmount).toFixed(0, Big.ROUND_UP);
+            amountUSD = Big(btcPrice).times(btcAmount).toFixed(0, Big.roundUp);
           } catch (e) {
             console.log("Error calculating amountUSD", e);
           }
@@ -261,8 +260,7 @@ export const UtxoTable = ({
           );
 
           try {
-            //@ts-ignore
-            amountUSD = Big(btcPrice).times(btcAmount).toFixed(0, Big.ROUND_UP);
+            amountUSD = Big(btcPrice).times(btcAmount).toFixed(0, Big.roundUp);
           } catch (e) {
             console.log("error", e);
           }
@@ -331,7 +329,6 @@ export const UtxoTable = ({
     enableTopToolbar: true,
     positionToolbarAlertBanner: "none",
     positionToolbarDropZone: "top",
-    // @ts-ignore
     renderTopToolbarCustomActions: ({ table }) => {
       return (
         <div className="ml-2">
@@ -371,7 +368,6 @@ export const UtxoTable = ({
     // @ts-ignore
     muiTableBodyRowProps: { classes: { root: { after: "bg-green-100" } } },
 
-    // @ts-ignore
     muiTableBodyCellProps: ({ row }) => {
       const feeRatePct = row.original.amount
         ? calculateFeePercent(row.original.amount)
@@ -383,7 +379,6 @@ export const UtxoTable = ({
       };
     },
 
-    // @ts-ignore
     getRowId: (originalRow) => {
       return originalRow.txid;
     },

@@ -32,8 +32,7 @@ export const FeeRateColorChangeInputs = ({
     usePrevious(numberOfInputs);
 
   const feeRateColorInputs = useMemo(() => {
-    // @ts-ignore
-    const components = [];
+    const components: any = [];
     const removeFeeRateColorInput = (index: number) => {
       // set inputToBeRemoved so that the component's style changes to animate-slideOut
       // and therefore the removing animation runs
@@ -45,7 +44,6 @@ export const FeeRateColorChangeInputs = ({
         const newFeeRateColorMapValues = [...feeRateColorMapValues];
         newFeeRateColorMapValues.splice(index, 1);
 
-        // @ts-ignore
         components.splice(index, 1);
         removeFeeRateColor(index);
         setInputToBeRemoved(null);
@@ -69,6 +67,8 @@ export const FeeRateColorChangeInputs = ({
 
       if (didThisInputJustGetAdded && isLastItem) {
         return true;
+      } else {
+        return false;
       }
     };
 
@@ -85,7 +85,6 @@ export const FeeRateColorChangeInputs = ({
           leftItemWidth={leftItemWidth}
           percent={feeRateColorMapValues[i][0]}
           color={feeRateColorMapValues[i][1]}
-          // @ts-ignore
           isAnimateIn={isAnimateIn}
         />
       );

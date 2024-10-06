@@ -329,9 +329,8 @@ function Playground() {
           <SegmentedControl
             className="mb-4"
             value={txMode}
-            // @ts-ignore
-            onChange={(value: TxMode) => {
-              setTxMode(value);
+            onChange={(value: string) => {
+              setTxMode(value as TxMode);
             }}
             data={[TxMode.SINGLE, TxMode.BATCH, TxMode.CONSOLIDATE]}
           />

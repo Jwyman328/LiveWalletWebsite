@@ -73,11 +73,10 @@ export const UtxosDisplay = ({
   setUtxos,
 }: UtxosDisplayProps) => {
   const startingReceivingOutputCount = txMode === TxMode.CONSOLIDATE ? 1 : 2;
-  const [receivingOutputCount, setReceivingOutputCount] = useState(
-    startingReceivingOutputCount
-  );
+  const [receivingOutputCount, setReceivingOutputCount] = useState<
+    string | number
+  >(startingReceivingOutputCount);
   const [consolidationUtxo, setConsolidationUtxo] = useState<Utxo[]>([]);
-  const [isSavePSBTEnabled, setIsSavePSBTEnabled] = useState(false);
 
   const [selectedUtxos, setSelectedUtxos] = useState<
     UtxoRequestParamWithAmount[]
@@ -88,20 +87,22 @@ export const UtxosDisplay = ({
   >(1);
   const handleNextUtxoAdded = () => {
     const newUtxos = [...utxos];
-    const randomUuid = Math.random();
+
     const amountInSats =
       btcMetric === BtcMetric.SATS
-        ? currentAddUtxoValue
+        ? Number(currentAddUtxoValue)
         : Number(currentAddUtxoValue) * 100000000;
+
+    const randomUuid = Math.random().toFixed(16);
     newUtxos.push({
-      amount: Number(amountInSats),
-      txid: randomUuid.toString(),
+      amount: amountInSats,
+      txid: randomUuid,
       vout: 0,
     });
     setUtxos(newUtxos);
   };
 
-  const estimateIt = () => {
+  const estimateTxFees = () => {
     const realFeeRate =
       txMode === TxMode.CONSOLIDATE ? consolidationFeeRate : feeRate;
     const outputCount =
@@ -112,7 +113,7 @@ export const UtxosDisplay = ({
       walletType,
       signaturesNeeded,
       numberOfXpubs,
-      outputCount
+      Number(outputCount)
     );
     const response: CreateTxFeeEstimationResponseType = {
       spendable: true,
@@ -131,12 +132,11 @@ export const UtxosDisplay = ({
   // changing seelctedUtxos length or the consolidationFeeRate should also clear the consolidation data.
   useEffect(() => {
     if (txMode === TxMode.CONSOLIDATE) {
-      setIsSavePSBTEnabled(false);
       setConsolidationUtxo([]);
     }
   }, [consolidationFeeRate, selectedUtxos.length, txMode]);
 
-  const onReceivingOutputChange = (value: number) => {
+  const onReceivingOutputChange = (value: number | string) => {
     setReceivingOutputCount(value);
     // reset the current batched tx data
     // since a new output count will change the batch fee estimate
@@ -168,11 +168,9 @@ export const UtxosDisplay = ({
 
   const calculateFeeEstimate = async () => {
     try {
-      const response = estimateIt();
+      const response = estimateTxFees();
       setCurrentBatchedTxData(response);
       if (txMode === TxMode.CONSOLIDATE) {
-        setIsSavePSBTEnabled(true);
-
         const totalAmount =
           selectedUtxos.reduce((accumulator, currentObject) => {
             return accumulator + currentObject.amount;
@@ -212,8 +210,7 @@ export const UtxosDisplay = ({
       ? btcSatHandler(Number(fee).toLocaleString(), BtcMetric.BTC)
       : undefined;
     const feeUsdAmount = feeInBtc
-      ? // @ts-ignore
-        Big(btcPrice).times(feeInBtc).toFixed(0, Big.ROUND_UP)
+      ? Big(btcPrice).times(feeInBtc).toFixed(0, Big.roundUp)
       : undefined;
 
     const isSpendable = true;
@@ -343,7 +340,7 @@ export const UtxosDisplay = ({
                   walletType={walletType}
                   signaturesNeeded={signaturesNeeded}
                   numberOfXpubs={numberOfXpubs}
-                  receivingOutputCount={receivingOutputCount}
+                  receivingOutputCount={Number(receivingOutputCount)}
                   feeRate={feeRate}
                   getFeeRateColor={getFeeRateColor}
                   btcPrice={btcPrice}
@@ -450,7 +447,6 @@ export const UtxosDisplay = ({
                 allowNegative={false}
                 clampBehavior="strict"
                 value={receivingOutputCount}
-                // @ts-ignore
                 onChange={onReceivingOutputChange}
                 thousandSeparator=","
                 min={1}
