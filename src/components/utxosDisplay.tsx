@@ -244,10 +244,10 @@ export const UtxosDisplay = ({
 
   const screenWidth = useCurrentScreenWidth();
   const isConsolidationBreakPointNeeded =
-    TxMode.CONSOLIDATE === txMode && screenWidth < 1300;
+    TxMode.CONSOLIDATE === txMode && screenWidth < 1385;
   const isSingleOrBatchBreakPointNeeded =
-    (TxMode.BATCH === txMode && screenWidth < 1080) ||
-    (TxMode.SINGLE === txMode && screenWidth < 860);
+    (TxMode.BATCH === txMode && screenWidth < 1140) ||
+    (TxMode.SINGLE === txMode && screenWidth < 915);
   const inputsContainer = !isConsolidationBreakPointNeeded
     ? "flex flex-row"
     : "flex flex-col";
@@ -310,7 +310,7 @@ export const UtxosDisplay = ({
                           btcMetric === BtcMetric.BTC ? "BTC" : "sats"
                         })`}
                         data-testid="consolidation-fee-rate-input"
-                        className={`mb-0 w-40 mt-0`}
+                        className={`mb-0 w-64 mt-0`}
                         allowNegative={false}
                         clampBehavior="strict"
                         value={currentAddUtxoValue}
@@ -318,7 +318,6 @@ export const UtxosDisplay = ({
                         thousandSeparator=","
                         decimalScale={btcMetric === BtcMetric.SATS ? 0 : 8}
                         min={btcMetric === BtcMetric.SATS ? 1 : 0.00000001}
-                        max={10000000}
                       />
                       <Button
                         disabled={false}

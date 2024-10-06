@@ -252,7 +252,7 @@ function Playground() {
   };
 
   const [scriptType, setScriptType] = useState<ScriptTypeOption>(
-    scriptTypeOptions[1]
+    scriptTypeOptions[0]
   );
 
   // switching txMode should clear batchTxData

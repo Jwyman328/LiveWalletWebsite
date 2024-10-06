@@ -8,7 +8,7 @@ export const Header = () => {
   const links = [
     { link: "/", label: "Home" },
     { link: "/download", label: "Download" },
-    { link: "/playground", label: "Playground" },
+    { link: "/playground", label: "Sandbox" },
   ];
 
   const location = useLocation();

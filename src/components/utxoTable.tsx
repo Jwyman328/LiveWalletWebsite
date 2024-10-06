@@ -96,15 +96,20 @@ export const UtxoTable = ({
   const [opened, { toggle }] = useDisclosure(false);
   const previousShowing = usePrevious(opened);
 
-  console.log("utxos", utxos);
-
-  const deleteUtxo = (selectedTxId: string) => {
-    console.log("all utxos", utxos);
-    console.log("delete it", selectedTxId);
+  const deleteUtxo = (
+    selectedTxId: string,
+    selectedRows: MRT_RowSelectionState
+  ) => {
     // get the existing utxos and just remove the one that has this id
     const nextUtxos = utxos.filter((utxo) => utxo.txid !== selectedTxId);
-    console.log("new utxos", nextUtxos);
     setUtxos(nextUtxos);
+
+    // remove from selected if the deleted utxo was a selected utxo
+    if (selectedRows.hasOwnProperty(selectedTxId)) {
+      delete selectedRows[selectedTxId];
+    }
+
+    setRowSelection({ ...selectedRows });
   };
 
   const DisplaySelectedUtxosData = () => {
@@ -168,12 +173,13 @@ export const UtxoTable = ({
       accessorKey: "remove",
       size: 100,
       enableSorting: false,
-      Cell: ({ row }: { row: any }) => {
+      Cell: ({ row, table }: { row: any; table: any }) => {
+        const selectedRows = table.getState().rowSelection;
         return (
           <div className="flex items-center justify-center">
             <ActionIcon
               color="red"
-              onClick={() => deleteUtxo(row.original.txid)}
+              onClick={() => deleteUtxo(row.original.txid, selectedRows)}
             >
               <IconTrash size={16} />
             </ActionIcon>
