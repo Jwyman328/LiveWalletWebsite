@@ -39,7 +39,7 @@ const router = createHashRouter([
         element: <Download />,
       },
       {
-        path: "playground", // playground route
+        path: "sandbox", // sandbox route
         element: <Playground />,
       },
       // Add more routes here as needed

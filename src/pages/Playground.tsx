@@ -578,7 +578,7 @@ function Playground() {
     </div>
   ) : (
     <div className="h-full text-center mt-8">
-      Please use a larger screen to access the live wallet playground
+      Please use a larger screen to access the live wallet sandbox
     </div>
   );
 }
