@@ -42,6 +42,9 @@ export const Home = () => {
                 the resulting UTXO to the input UTXOs across various fee rate
                 environments.
               </li>
+              <li>
+                Analyze transaction privacy.
+              </li>
             </ul>
           </div>
         </div>
