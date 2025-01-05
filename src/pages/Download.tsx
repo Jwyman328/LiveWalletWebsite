@@ -2,7 +2,6 @@ import React from "react";
 import { Table } from "@mantine/core";
 
 export const Download = () => {
-
   const latestVersions = [
     {
       type: "MacOS (Apple M1/M2/M3)",
@@ -13,16 +12,6 @@ export const Download = () => {
       type: "MacOS (Intel)",
       label: "1.0.0.dmg",
       link: "https://github.com/Jwyman328/LiveWallet/releases/download/1.0.0/Live.Wallet-1.0.0.dmg",
-    },
-    {
-      type: "Linux (Intel/AMD) (Ubuntu/Debian)",
-      label: "1.0.0_amd64.deb",
-      link: "https://github.com/Jwyman328/LiveWallet/releases/download/1.0.0/LiveWallet_1.0.0_amd64.deb",
-    },
-    {
-      type: "Linux (ARM64) (Ubuntu/Debian)",
-      label: "1.0.0_arm64.deb",
-      link: "https://github.com/Jwyman328/LiveWallet/releases/download/1.0.0/LiveWallet_1.0.0_arm64.deb",
     },
   ];
   const previousVersions = [
